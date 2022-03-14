@@ -44,15 +44,17 @@ def squared_loss(y_hat, y):
 def sgd(params, lr, batch_size):
     """
     定义优化算法：小批量随机梯度下降
-    :param params: 
-    :param lr:
-    :param batch_size:
+    :param params: 模型参数集合 w
+    :param lr: 学习速率
+    :param batch_size: 批量大小
     :return:
     """
-    with torch.no_grad():
+    with torch.no_grad():  # 不被track计算 no_grad 中的上下文管理器中的计算不会被反向传播所记录
         for param in params:
             param -= lr * param.grad / batch_size
             param.grad.zero_()
+
+
 
 if __name__ == '__main__':
     true_w = torch.tensor([2, -3.4])
@@ -69,3 +71,27 @@ if __name__ == '__main__':
     在初始化参数之后，我们的任务是更新这些参数，直到这些参数足够拟合我们的数据。 
     每次更新都需要计算损失函数关于模型参数的梯度。 有了这个梯度，我们就可以向减小损失的方向更新每个参数。
     """
+    """
+    训练过程：
+    初始化参数
+    重复以下训练，直到完成
+
+        1. 读取一小批量训练样本，并通过我们的模型来获得一组预测，并计算完损失后，开始反向传播，存储每个参数的梯度。
+        2. 我们调用优化算法sgd来更新模型参数。
+    """
+
+    lr = 0.03
+    num_epochs = 3 # epoch 纪元，时代
+    batch_size = 10
+    net = linreg
+    loss = squared_loss
+    for epoch in range(num_epochs):
+        for X, y in data_iter(batch_size, features, labels):
+            l = loss(net(X, w, b), y)   # X和y的小批量损失
+            # 因为l形状是(batch_size,1)，而不是一个标量。l中的所有元素被加到一起，
+            # 并以此计算关于[w,b]的梯度
+            l.sum().backward()
+            sgd([w, b], lr, batch_size)  # 使用参数的梯度更新参数
+        with torch.no_grad():
+            train_l = loss(net(features, w, b), labels)
+            print(f'epoch {epoch + 1}, loss {float(train_l.mean()):f}')
