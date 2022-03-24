@@ -8,6 +8,9 @@ def init_weights(m):
     if type(m) == nn.Linear:
         nn.init.normal_(m.weight, std=0.01)
 
+def my_trainer_epoch3():
+    pass
+
 
 if __name__ == '__main__':
     batch_size = 256
@@ -17,7 +20,12 @@ if __name__ == '__main__':
     # 我们在线性层前定义了展平层（flatten），来调整网络输入的形状
 
     net = nn.Sequential(nn.Flatten(), nn.Linear(784, 10))
-    net.apply(init_weights);
+    # print(net)
+    # Sequential(
+    #   (0): Flatten(start_dim=1, end_dim=-1)
+    #   (1): Linear(in_features=784, out_features=10, bias=True)
+    # )
+    net.apply(init_weights)  # 初始化参数
     loss = nn.CrossEntropyLoss(reduction='none')
     trainer = torch.optim.SGD(net.parameters(), lr=0.1)
     num_epochs = 10
