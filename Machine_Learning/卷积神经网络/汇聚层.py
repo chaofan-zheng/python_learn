@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+import numpy as np
 
 
 def pool2d(X, pool_size, mode='max'):
@@ -25,7 +26,7 @@ if __name__ == '__main__':
     print(pool2d(X))
 
     # 自定义padding和stride
-    pool2d = nn.AvgPool2d(3, padding=1, stride=2) # 每边都填充了1，所以高度和宽度都是1
+    pool2d = nn.AvgPool2d(3, padding=1, stride=2)  # 每边都填充了1，所以高度和宽度都是1
     print(pool2d(X))
 
     # 矩形
@@ -33,4 +34,8 @@ if __name__ == '__main__':
     pool2d(X)
 
     # 当数据有多个通道的时候，汇聚层在每个输入通道上单独运算，而不是像卷积层一样在通道上对输入进行汇总。 这意味着汇聚层的输出通道数与输入通道数相同
-
+    # 构建具有两个通道的张量
+    X = torch.cat((X, X + 1), 1)
+    print(X)
+    pool2d = nn.MaxPool2d(3, padding=1, stride=2)  # 特征图大小= (4-3+1*2)/2 =
+    print(pool2d(X))  # 通道数没有改变
