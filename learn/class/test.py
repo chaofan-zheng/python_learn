@@ -21,4 +21,5 @@ if __name__ == '__main__':
     p = Person(name='Zhengchaofan',age=99)
     p(job="taichi")  # Person Zhengchaofan doing job taichi
     print(p)  # Person类，包含name=Zhengchaofan和age=99两个实例属性
+    res = p
 
